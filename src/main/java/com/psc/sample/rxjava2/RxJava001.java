@@ -1,6 +1,7 @@
 package com.psc.sample.rxjava2;
 
 import io.reactivex.Flowable;
+import io.reactivex.flowables.ConnectableFlowable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,11 +71,23 @@ public class RxJava001 {
 
     }
 
+    /**
+     * 에러 처리
+     */
+    public static void A004() {
+        Flowable<String> flowable = Flowable.just("1", "2","3","A");
+        flowable.map(x -> Integer.parseInt(x)).onErrorReturn(x -> 0)
+                .subscribe(x -> System.out.println(x));
+
+
+    }
+
     public static void main(String[] args) throws InterruptedException {
 
         //A001();
         //A002();
         //A003();
+        //A004();
 
 
 /**
