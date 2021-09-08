@@ -1,4 +1,4 @@
-package com.psc.sample.generic;
+package com.psc.sample.rx1.generic;
 
 import java.util.ArrayList;
 import java.util.List;

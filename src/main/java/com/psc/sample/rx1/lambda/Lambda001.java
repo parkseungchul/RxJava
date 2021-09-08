@@ -1,4 +1,4 @@
-package com.psc.sample.lambda;
+package com.psc.sample.rx1.lambda;
 
 import java.text.SimpleDateFormat;
 

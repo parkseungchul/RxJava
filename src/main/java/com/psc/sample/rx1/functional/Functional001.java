@@ -1,4 +1,4 @@
-package com.psc.sample.functional;
+package com.psc.sample.rx1.functional;
 
 import java.util.Arrays;
 import java.util.List;

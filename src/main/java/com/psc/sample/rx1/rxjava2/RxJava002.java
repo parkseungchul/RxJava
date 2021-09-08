@@ -1,4 +1,4 @@
-package com.psc.sample.rxjava2;
+package com.psc.sample.rx1.rxjava2;
 
 import io.reactivex.Flowable;
 

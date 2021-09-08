@@ -1,4 +1,4 @@
-package com.psc.sample.stream;
+package com.psc.sample.rx1.stream;
 
 import java.util.ArrayList;
 import java.util.Arrays;

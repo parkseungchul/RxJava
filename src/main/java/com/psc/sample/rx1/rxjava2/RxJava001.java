@@ -1,4 +1,4 @@
-package com.psc.sample.rxjava2;
+package com.psc.sample.rx1.rxjava2;
 
 import io.reactivex.Flowable;
 import io.reactivex.flowables.ConnectableFlowable;
@@ -20,6 +20,7 @@ public class RxJava001 {
         System.out.println();
         flowable.subscribe(x -> System.out.print(x));
         System.out.println();
+
     }
 
     /**
@@ -84,7 +85,7 @@ public class RxJava001 {
 
     public static void main(String[] args) throws InterruptedException {
 
-        //A001();
+        A001();
         //A002();
         //A003();
         //A004();
