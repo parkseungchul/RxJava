@@ -31,7 +31,6 @@ public class Stream002_필터_정렬 {
 
         int[] after2 = Arrays.stream(numbers).filter(s -> s%2==0).map(s -> s*s).toArray();
         StreamData.intPrint(after2);
-
     }
 
     /**
