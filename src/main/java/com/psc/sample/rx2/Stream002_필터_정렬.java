@@ -63,20 +63,31 @@ public class Stream002_필터_정렬 {
     public void stringsOrder(String[] stringNumbers){
 
         // 스트링으로서 오름차순
-        Arrays.sort(stringNumbers);
+        //Arrays.sort(stringNumbers);
         //StreamData.objectPrint(stringNumbers);
 
         // 스트링으로서 내림차순 (10 이 뒤에 가 있음)
-        Arrays.sort(stringNumbers, Collections.reverseOrder());
-        StreamData.objectPrint(stringNumbers);
+        //Arrays.sort(stringNumbers, Collections.reverseOrder());
+        //StreamData.objectPrint(stringNumbers);
+
+        // https://codevang.tistory.com/288
+        // 숫자 스타일로 비교해서 내림차순 (음수 오름차순) 기본값
+        // s1 은 현재 것, s2 는 전에 것
+        // -1  s2 크다 (바뀌고)
+        // 0
+        // 1   s2 작다 (그대로)
+        String [] after2 = Arrays.stream(stringNumbers).sorted((s1, s2) -> {
+            System.out.println("=====> "+s1 +" " + s2);
+            return Integer.parseInt(s1) - Integer.parseInt(s2);
+        }).toArray(String[]::new);
+        StreamData.objectPrint(after2);
 
         // 숫자 스타일로 비교해서 내림차순 (양수 내림차순)
+        // s2 - s1 뒤에가 커서 음수가 나온다 내림차순이 됨
         String [] after = Arrays.stream(stringNumbers).sorted((s1, s2) -> Integer.parseInt(s2) - Integer.parseInt(s1)).toArray(String[]::new);
-        StreamData.objectPrint(after);
+        //StreamData.objectPrint(after);
 
-        // 숫자 스타일로 비교해서 내림차순 (음수 오름차순)
-        String [] after2 = Arrays.stream(stringNumbers).sorted((s1, s2) -> Integer.parseInt(s1) - Integer.parseInt(s2)).toArray(String[]::new);
-        StreamData.objectPrint(after2);
+
 
 
     }
