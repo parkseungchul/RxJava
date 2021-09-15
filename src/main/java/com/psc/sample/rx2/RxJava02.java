@@ -1,6 +1,7 @@
 package com.psc.sample.rx2;
 
 import io.reactivex.Flowable;
+import io.reactivex.flowables.ConnectableFlowable;
 import io.reactivex.schedulers.Schedulers;
 
 import java.util.concurrent.TimeUnit;
@@ -13,8 +14,10 @@ public class RxJava02 {
         //rxJava02.flatMap();
         //rxJava02.concatMap();
         //rxJava02.concatMapEager();
-        rxJava02.merge();
-
+        //rxJava02.merge();
+        //rxJava02.publisher_retry();
+        //rxJava02.publisher_onError();
+        rxJava02.publisher_onErrorReturn();
     }
 
     /**
@@ -89,17 +92,37 @@ public class RxJava02 {
     }
 
 
+    /**
+     * 두 개의 stream 을 모음
+     */
     public void merge(){
         Flowable<Integer> source1 = Flowable.range(1,100).subscribeOn(Schedulers.computation()).observeOn(Schedulers.computation());
-
         Flowable<Integer> source2 = Flowable.range(101,100).subscribeOn(Schedulers.computation()).observeOn(Schedulers.computation());
-
-
-
         Flowable.merge(source1, source2).subscribe(s -> System.out.println(s));
-
         threadSleep(10, true);
     }
+
+    /**
+     * 생산자 에러 재처리 도전
+     */
+    public void publisher_retry(){
+        Flowable<String> flowable = Flowable.just("1","2", "삼","4","오","6").map(data -> String.valueOf(Integer.parseInt(data))).retry(3);
+        flowable.subscribeOn(Schedulers.computation()).subscribe(data -> System.out.println(data));
+        threadSleep(10, false);
+    }
+
+    /**
+     * 생산자 에러 리턴 처음 에러나오면 끝
+     */
+    public void publisher_onErrorReturn() {
+        Flowable<String> flowable = Flowable.just("1","2", "삼","4","오","6").map(data -> String.valueOf(Integer.parseInt(data))).onErrorReturn(data -> {
+            return "-1";
+        });
+        flowable.subscribeOn(Schedulers.computation()).subscribe(data -> System.out.println(data));
+        threadSleep(10, false);
+    }
+
+
 
 
 
