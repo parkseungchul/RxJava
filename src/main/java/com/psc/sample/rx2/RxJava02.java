@@ -11,12 +11,24 @@ public class RxJava02 {
     public static void main(String[] args) {
 
         RxJava02 rxJava02 = new RxJava02();
+
+        // floatMap 멀티 쓰레드
         //rxJava02.flatMap();
+
+        // concatMap 단일 쓰레드
         //rxJava02.concatMap();
+
+        // concatMapEager 멀티 쓰레드 순서 보장
         //rxJava02.concatMapEager();
+
+        // merge 두 개의 생산자 합쳐
         //rxJava02.merge();
+
+        //retry  publisher
         //rxJava02.publisher_retry();
-        //rxJava02.publisher_onError();
+
+        // subscriber error
+        //onErrorReturn rxJava02.publisher_onError();
         rxJava02.publisher_onErrorReturn();
     }
 

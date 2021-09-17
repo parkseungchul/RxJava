@@ -11,6 +11,7 @@
  */
 package com.psc.sample.rx2;
 
+import com.psc.sample.ThreadUtil;
 import io.reactivex.*;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -33,27 +34,43 @@ public class RxJava01 {
     public static void main(String[] args) {
 
         RxJava01 rxJava01 = new RxJava01();
-        //rxJava01.default001();
-        rxJava01.default002();
-        //rxJava01.default003();
-        //rxJava01.default004();
-        //rxJava01.default005();
-        //rxJava01.default006();
-        //rxJava01.default007();
-        //rxJava01.default008();
+
+        // RxJava 기본 컨셉
+        //rxJava01.basicConcept_001();
+
+        // 생산자 타입 cold hot
+        //rxJava01.coldHot_002();
+
+        // 구독 해지 disposable
+        //rxJava01.disposable_003();
+
+        // 구독 과정 보기
+        //rxJava01.newSubscribe_004();
+
+        // 데이터 타입 가정 (한개, 한개 또는 없음)
+        //rxJava01.singleMaybe_005();
+
+        // List 생산자 전략
+        //rxJava01.fromIterable_006();
+
+
+        // just, Interval thread 보기
+        //rxJava01.thread_007();
+
+        //back pressure
+        //rxJava01.backPressure_008();
     }
 
     /**
      * 생산자와 소비자
      */
-    public void default001(){
+    public void basicConcept_001(){
         // publisher, subscriber 생산자 소비자를 이용한 비동기 통신 (pptx 참고)
         // 배압 통지 속도가 데이터 처리 속도보다 빠를 때 통지량 제어
         // 배압 기능 있음 Reactive Stream 지원
         // 생산자 (흐름이 가능한 RxJava2)
 
         Publisher<Integer> a;      // 생산자
-        Subscription b;            // 구독
         Subscriber<Integer> c;     // 구독자
 
 
@@ -82,7 +99,7 @@ public class RxJava01 {
         //Flux<Integer> integerFlux = Flux.just(1,2,3,4,5);
         //integerFlux.sample(data -> System.out.println(data));
 
-        threadSleep(10, false);
+        ThreadUtil.Sleep(10, false);
     }
 
     /**
@@ -90,7 +107,7 @@ public class RxJava01 {
      * hot 은  connect 를 해야 시작임...
      * hot 와 cold를 비교 pptx 참고
      */
-    public void default002(){
+    public void coldHot_002(){
         //https://medium.com/tompee/rxjava-ninja-hot-and-cold-observables-19b30d6cc2fa
         // publisher, subscriber 생산자 소비자를 이용한 비동기 통신 (pptx 참고)
         // 생산자 (흐름이 가능한 RxJava2)
@@ -101,9 +118,9 @@ public class RxJava01 {
         if(isClod){
             Flowable<Long> flowable = Flowable.interval(1, TimeUnit.SECONDS);
             flowable.subscribe(data -> System.out.println("First ===> "+data));
-            threadSleep(5, false);
+            ThreadUtil.Sleep(5, false);
             flowable.subscribe(data -> System.out.println("Second ===> "+data));
-            threadSleep(5, false);
+            ThreadUtil.Sleep(5, false);
 
         // Hot!!!
         }else{
@@ -117,25 +134,25 @@ public class RxJava01 {
              **/
 
 
-            ConnectableObservable<Long> observable2 = Observable.just(1L,2L,3L,4L,5L,6L).doOnNext(data -> threadSleep(1, false)).publish();
+            ConnectableObservable<Long> observable2 = Observable.just(1L,2L,3L,4L,5L,6L).doOnNext(data ->  ThreadUtil.Sleep(1, false)).publish();
             observable2.connect();
             observable2.subscribe(data -> System.out.println("First ===> "+data));
-            threadSleep(2, false);
+            ThreadUtil.Sleep(2, false);
             observable2.subscribe(data -> System.out.println("Second ===> "+data));
-            threadSleep(5, false);
+            ThreadUtil.Sleep(5, false);
         }
     }
 
     /**
      * 구독 해지
      */
-    public void default003(){
+    public void disposable_003(){
         Flowable<Long> flowable = Flowable.interval(1,TimeUnit.SECONDS);
         Disposable disposable = flowable.subscribe(data -> System.out.println(data));
-        threadSleep(5, true);
+        ThreadUtil.Sleep(5, true);
         disposable.dispose();
         System.out.println("구독해지!!");
-        threadSleep(5, true);
+        ThreadUtil.Sleep(5, true);
 
 
         // 일괄 구독 해지!!!!
@@ -145,16 +162,19 @@ public class RxJava01 {
         Disposable disposable2 = flowable.subscribe(data -> System.out.println("2 " + data));
         compositeDisposable.add(disposable2);
 
-        threadSleep(5 , true);
+        ThreadUtil.Sleep(5 , true);
         compositeDisposable.dispose();
     }
 
     /**
-     * subscribe 구조 보기
+     * subscribe 구조 보기 구동과정 보기
      */
-    public void default004(){
+    public void newSubscribe_004(){
 
         Flowable<Integer> integerFlowable = Flowable.just(1,2,3,4,5,6);
+
+        integerFlowable.subscribe();
+
         integerFlowable.subscribe(new Subscriber<Integer>() {
             @Override
             public void onSubscribe(Subscription s) {
@@ -175,14 +195,14 @@ public class RxJava01 {
             }
         });
 
-        threadSleep(15, true);
+        ThreadUtil.Sleep(15, true);
 
     }
 
     /**
      * 데이터 타입 가정
      */
-    public void default005(){
+    public void singleMaybe_005(){
 
         // 한개라는 가정
         Single<Integer> single = Single.just(1);
@@ -193,21 +213,24 @@ public class RxJava01 {
 
         //single.subscribe(i -> {System.out.println(i);});
         maybe.subscribe(i -> System.out.println("---> "+ i ));
-        threadSleep(10 ,false);
+        ThreadUtil.Sleep(10 ,false);
+
+
+
 
     }
 
     /**
      * List Flowable 로 변경
      */
-    private void default006() {
+    private void fromIterable_006() {
 
         List<Integer> list = Arrays.asList(1,2,3,4,5);
         Flowable.fromIterable(list).subscribe(data -> System.out.println("[1]  "+data));
 
         Flowable.fromArray(list).subscribe(data -> System.out.println("[2]  "+data));
 
-        threadSleep(5, true);
+        ThreadUtil.Sleep(5, true);
     }
 
 
@@ -215,13 +238,14 @@ public class RxJava01 {
      * 배압
      * just 메인 쓰레드
      * interval 은 다른 쓰레드 (기존 쓰레드 바로 종료)
+     * END 가 언제 찍히는지가 중요
      */
-    private void default007(){
+    private void thread_007(){
 
         if(false){
             Flowable.just(1,2,3,4,5,6)
                     .doOnNext(data -> System.out.println(System.currentTimeMillis() +" "+ data)).subscribe(data ->{
-                        threadSleep(2, true);
+                        ThreadUtil.Sleep(2, true);
                     });
             System.out.println("END");
         }
@@ -229,11 +253,11 @@ public class RxJava01 {
         if(true){
             Flowable.interval(1,TimeUnit.SECONDS)
                     .doOnNext(data -> System.out.println(System.currentTimeMillis() +" "+ data)).subscribe(data ->{
-                        threadSleep(2, true);
+                        ThreadUtil.Sleep(2, true);
                     });
             System.out.println("END");
         }
-        threadSleep(10, true);
+        ThreadUtil.Sleep(10, true);
     }
 
 
@@ -243,7 +267,7 @@ public class RxJava01 {
      * subscribeOn 생산자에서의 쓰레드 정의 한번 정하면 끝
      * observeOn 소비자에서의 쓰레드 정의함
      */
-    public void default008(){
+    public void backPressure_008(){
 
         if(true){
             Flowable.just(1,2,3,4,5,6)
@@ -251,7 +275,7 @@ public class RxJava01 {
                     .subscribeOn(Schedulers.io())
                     .subscribeOn(Schedulers.single())
                     .subscribe(data ->{
-                        threadSleep(0, true);
+                        ThreadUtil.Sleep(0, true);
                     });
         }
 
@@ -274,7 +298,7 @@ public class RxJava01 {
                     });
         }
 
-        threadSleep(10, false);
+        ThreadUtil.Sleep(10, false);
     }
 
 
@@ -285,14 +309,5 @@ public class RxJava01 {
 
 
 
-    public void threadSleep(int time, boolean isDebug){
-        try {
-            if(isDebug){
-                System.out.println("                                 " + time +"초 sleep " + Thread.currentThread().getName());
-            }
-            Thread.sleep(time * 1000L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
+
 }
