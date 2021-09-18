@@ -1,4 +1,4 @@
-package com.psc.sample;
+package com.psc.sample.util;
 
 public class ThreadUtil {
 

@@ -1,4 +1,4 @@
-package com.psc.sample;
+package com.psc.sample.util;
 
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;

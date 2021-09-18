@@ -9,18 +9,15 @@
  */
 package com.psc.sample.rx2;
 
-import com.psc.sample.ThreadUtil;
+import com.psc.sample.util.ThreadUtil;
 import io.reactivex.*;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.flowables.ConnectableFlowable;
-import io.reactivex.observables.ConnectableObservable;
 import io.reactivex.schedulers.Schedulers;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.List;

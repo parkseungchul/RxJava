@@ -1,4 +1,4 @@
-package com.psc.sample.rxjava;
+package com.psc.sample.old_rajava;
 
 import io.reactivex.Flowable;
 import io.reactivex.disposables.CompositeDisposable;

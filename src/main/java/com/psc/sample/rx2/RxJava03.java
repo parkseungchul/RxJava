@@ -1,10 +1,8 @@
 package com.psc.sample.rx2;
 
-import com.psc.sample.CustomSubscriber;
-import com.psc.sample.ThreadUtil;
+import com.psc.sample.util.CustomSubscriber;
+import com.psc.sample.util.ThreadUtil;
 import io.reactivex.Flowable;
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
 
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
@@ -45,18 +43,18 @@ public class RxJava03 {
 
     public void range(){
         //Flowable.range(100,5).subscribe(new CustomSubscriber());
-        Flowable.range(100, 5).doOnNext(data -> ThreadUtil.Sleep(1,false)).subscribe(new CustomSubscriber());
-        ThreadUtil.Sleep(10,false);
+        Flowable.range(100, 5).doOnNext(data -> ThreadUtil.sleep(1,false)).subscribe(new CustomSubscriber());
+        ThreadUtil.sleep(10,false);
     }
 
     public void interval(){
         Flowable.interval(1, TimeUnit.SECONDS).subscribe(new CustomSubscriber(true));
-        ThreadUtil.Sleep(10,true);
+        ThreadUtil.sleep(10,true);
     }
 
     public void timer(){
         Flowable.timer(10L, TimeUnit.SECONDS).subscribe(new CustomSubscriber(true));
-        ThreadUtil.Sleep(20, true);
+        ThreadUtil.sleep(20, true);
     }
 
 }
