@@ -1,13 +1,11 @@
 /**
  * RxJava 2.0 reactive stream 구현
- * reactive stream 데이터 스트림을 비동기로 처리하는 것을 의미
+ * reactive stream : 데이터 스트림을 비동기로 처리하는 것을 의미
  *
  * 데이터를 가져와서 처리하는 것이 아니고
  * 데이터를 받은 시점에 반응해서 처리
  * 데이터 보내는 publisher 열심히 보내고 데이터를 소비하는 subscriber 는 열심히 소비하면 됨
  * 마이크로 서비스와 어울림.
- *
- *
  */
 package com.psc.sample.rx2;
 
@@ -28,6 +26,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+// 퍼블리서 섭스크라이버 디스포즈블
+
+
 public class RxJava01 {
 
 
@@ -35,19 +36,19 @@ public class RxJava01 {
 
         RxJava01 rxJava01 = new RxJava01();
 
-        // RxJava 기본 컨셉
+        // flowable subscribe 생산자와 소비자
         //rxJava01.basicConcept_001();
 
-        // 생산자 타입 cold hot
+        // ConnectableFlowable (hot publisher)
         //rxJava01.coldHot_002();
 
-        // 구독 해지 disposable
+        // disposable subscriber 구독 해지
         //rxJava01.disposable_003();
 
-        // 구독 과정 보기
+        // new Subscriber 로 구독 과정 보기
         //rxJava01.newSubscribe_004();
 
-        // 데이터 타입 가정 (한개, 한개 또는 없음)
+        // single, maybe, mono, flux publisher 타입
         //rxJava01.singleMaybe_005();
 
         // List 생산자 전략
@@ -57,12 +58,12 @@ public class RxJava01 {
         // just, Interval thread 보기
         //rxJava01.thread_007();
 
-        //back pressure
+        // 07 onBackpressureBuffer publisher 배압 전략
         //rxJava01.backPressure_008();
     }
 
     /**
-     * 생산자와 소비자
+     * flowable subscribe 생산자와 소비자
      */
     public void basicConcept_001(){
         // publisher, subscriber 생산자 소비자를 이용한 비동기 통신 (pptx 참고)
@@ -91,21 +92,16 @@ public class RxJava01 {
         integerObservable.subscribe(data -> System.out.println(data));
 
 
-        // 단건 생산자 (Spring Reactor)
-        //Mono<Integer> integerMono = Mono.just(1);
-       // integerMono.subscribe(data -> System.out.println(data));
 
-        // 다건 생산자 (Spring Reactor)
-        //Flux<Integer> integerFlux = Flux.just(1,2,3,4,5);
-        //integerFlux.sample(data -> System.out.println(data));
 
-        ThreadUtil.Sleep(10, false);
+        ThreadUtil.sleep(10, false);
     }
 
     /**
+     * cold Hot publisher
      * 생산자와 소비자 cold, hot
      * hot 은  connect 를 해야 시작임...
-     * hot 와 cold를 비교 pptx 참고
+     * hot 와 cold 를 비교 pptx 참고
      */
     public void coldHot_002(){
         //https://medium.com/tompee/rxjava-ninja-hot-and-cold-observables-19b30d6cc2fa
@@ -118,41 +114,44 @@ public class RxJava01 {
         if(isClod){
             Flowable<Long> flowable = Flowable.interval(1, TimeUnit.SECONDS);
             flowable.subscribe(data -> System.out.println("First ===> "+data));
-            ThreadUtil.Sleep(5, false);
+            ThreadUtil.sleep(5, false);
             flowable.subscribe(data -> System.out.println("Second ===> "+data));
-            ThreadUtil.Sleep(5, false);
+            ThreadUtil.sleep(5, false);
 
         // Hot!!!
         }else{
             /**
-            ConnectableObservable<Long> observable1 = Observable.interval(1, TimeUnit.SECONDS).publish();
-            observable1.connect();
-            observable1.subscribe(data -> System.out.println("First ===> "+data));
-            threadSleep(5, false);
-            observable1.subscribe(data -> System.out.println("Second ===> "+data));
-            threadSleep(5, false);
+             ConnectableFlowable<Long> flowable = Flowable.interval(1, TimeUnit.SECONDS).publish();
+             flowable.connect();
+
+             flowable.subscribe(data -> System.out.println("1: "+ data));
+             ThreadUtil.sleep(3, true);
+
+             flowable.subscribe(data -> System.out.println("2: "+ data));
+             ThreadUtil.sleep(3, true);
              **/
 
+            ConnectableFlowable<Long> flowable = Flowable.interval(1, TimeUnit.SECONDS).doOnNext(data -> ThreadUtil.sleep(1, true)).publish();
+            flowable.connect();
 
-            ConnectableObservable<Long> observable2 = Observable.just(1L,2L,3L,4L,5L,6L).doOnNext(data ->  ThreadUtil.Sleep(1, false)).publish();
-            observable2.connect();
-            observable2.subscribe(data -> System.out.println("First ===> "+data));
-            ThreadUtil.Sleep(2, false);
-            observable2.subscribe(data -> System.out.println("Second ===> "+data));
-            ThreadUtil.Sleep(5, false);
+            flowable.subscribe(data -> System.out.println("1: "+ data));
+            ThreadUtil.sleep(3, true);
+
+            flowable.subscribe(data -> System.out.println("2: "+ data));
+            ThreadUtil.sleep(3, true);
         }
     }
 
     /**
-     * 구독 해지
+     * 04 disposable 구독 해지
      */
     public void disposable_003(){
         Flowable<Long> flowable = Flowable.interval(1,TimeUnit.SECONDS);
         Disposable disposable = flowable.subscribe(data -> System.out.println(data));
-        ThreadUtil.Sleep(5, true);
+        ThreadUtil.sleep(5, true);
         disposable.dispose();
         System.out.println("구독해지!!");
-        ThreadUtil.Sleep(5, true);
+        ThreadUtil.sleep(5, true);
 
 
         // 일괄 구독 해지!!!!
@@ -162,14 +161,14 @@ public class RxJava01 {
         Disposable disposable2 = flowable.subscribe(data -> System.out.println("2 " + data));
         compositeDisposable.add(disposable2);
 
-        ThreadUtil.Sleep(5 , true);
+        ThreadUtil.sleep(5 , true);
         compositeDisposable.dispose();
     }
 
     /**
-     * subscribe 구조 보기 구동과정 보기
+     * 05 new subscriber 구동 과정 보기
      */
-    public void newSubscribe_004(){
+    public void newSubscriber_004(){
 
         Flowable<Integer> integerFlowable = Flowable.just(1,2,3,4,5,6);
 
@@ -195,12 +194,12 @@ public class RxJava01 {
             }
         });
 
-        ThreadUtil.Sleep(15, true);
+        ThreadUtil.sleep(15, true);
 
     }
 
     /**
-     * 데이터 타입 가정
+     * single, maybe, mono, flux publisher 타입
      */
     public void singleMaybe_005(){
 
@@ -213,10 +212,16 @@ public class RxJava01 {
 
         //single.subscribe(i -> {System.out.println(i);});
         maybe.subscribe(i -> System.out.println("---> "+ i ));
-        ThreadUtil.Sleep(10 ,false);
+        ThreadUtil.sleep(10 ,false);
 
 
+        // 단건 생산자 (Spring Reactor)
+        //Mono<Integer> integerMono = Mono.just(1);
+        // integerMono.subscribe(data -> System.out.println(data));
 
+        // 다건 생산자 (Spring Reactor)
+        //Flux<Integer> integerFlux = Flux.just(1,2,3,4,5);
+        //integerFlux.sample(data -> System.out.println(data));
 
     }
 
@@ -230,7 +235,7 @@ public class RxJava01 {
 
         Flowable.fromArray(list).subscribe(data -> System.out.println("[2]  "+data));
 
-        ThreadUtil.Sleep(5, true);
+        ThreadUtil.sleep(5, true);
     }
 
 
@@ -245,7 +250,7 @@ public class RxJava01 {
         if(false){
             Flowable.just(1,2,3,4,5,6)
                     .doOnNext(data -> System.out.println(System.currentTimeMillis() +" "+ data)).subscribe(data ->{
-                        ThreadUtil.Sleep(2, true);
+                        ThreadUtil.sleep(2, true);
                     });
             System.out.println("END");
         }
@@ -253,11 +258,11 @@ public class RxJava01 {
         if(true){
             Flowable.interval(1,TimeUnit.SECONDS)
                     .doOnNext(data -> System.out.println(System.currentTimeMillis() +" "+ data)).subscribe(data ->{
-                        ThreadUtil.Sleep(2, true);
+                        ThreadUtil.sleep(2, true);
                     });
             System.out.println("END");
         }
-        ThreadUtil.Sleep(10, true);
+        ThreadUtil.sleep(10, true);
     }
 
 
@@ -275,7 +280,7 @@ public class RxJava01 {
                     .subscribeOn(Schedulers.io())
                     .subscribeOn(Schedulers.single())
                     .subscribe(data ->{
-                        ThreadUtil.Sleep(0, true);
+                        ThreadUtil.sleep(0, true);
                     });
         }
 
@@ -298,7 +303,7 @@ public class RxJava01 {
                     });
         }
 
-        ThreadUtil.Sleep(10, false);
+        ThreadUtil.sleep(10, false);
     }
 
 

@@ -2,7 +2,7 @@ package com.psc.sample;
 
 public class ThreadUtil {
 
-    public static void Sleep(int time, boolean isDebug){
+    public static void sleep(int time, boolean isDebug){
         try {
             if(isDebug){
                 System.out.println("                                 " + time +"초 sleep " + Thread.currentThread().getName());
