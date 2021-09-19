@@ -23,7 +23,7 @@ public class CustomSubscriber implements Subscriber {
     public void onNext(Object o) {
 
         if(isDebug){
-            System.out.println(ThreadUtil.getThreadInfo()+" "+o);
+            System.out.println(ThreadUtil.getThreadName()+" "+o);
         }else{
             System.out.println(o);
         }

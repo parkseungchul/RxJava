@@ -13,7 +13,7 @@ public class ThreadUtil {
         }
     }
 
-    public static String getThreadInfo(){
+    public static String getThreadName(){
         return Thread.currentThread().getName();
     }
 }

@@ -1,9 +1,12 @@
 package com.psc.sample.rx2;
 
+import com.psc.sample.util.CustomSubscriber;
+import com.psc.sample.util.ThreadUtil;
 import io.reactivex.Flowable;
-import io.reactivex.flowables.ConnectableFlowable;
-import io.reactivex.schedulers.Schedulers;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class RxJava02 {
@@ -12,141 +15,70 @@ public class RxJava02 {
 
         RxJava02 rxJava02 = new RxJava02();
 
-        // floatMap 멀티 쓰레드
-        //rxJava02.flatMap();
+        // fromArray fromIterable 배열, 리스트 publisher
+        //rxJava02.fromArray_fromIterable();
 
-        // concatMap 단일 쓰레드
-        //rxJava02.concatMap();
+        // fromCallable 반환값을 끝으로 통지하는 publisher
+        //rxJava02.fromCallable();
 
-        // concatMapEager 멀티 쓰레드 순서 보장
-        //rxJava02.concatMapEager();
+        // range 지정한 숫자만큼 통지 publisher
+        //rxJava02.range();
 
-        // merge 두 개의 생산자 합쳐
-        //rxJava02.merge();
+        // interval 지정한 간격만자 숫자 통보 publisher
+        //rxJava02.interval();
 
-        //retry  publisher
-        //rxJava02.publisher_retry();
+        // timer 지정한 시간 지난 후에 0을 리턴하는 publisher
+        //rxJava02.timer();
+        
+        // defer 구독한 시점에 publisher 데이터 생성
+        //rxJava02.defer();
 
-        // subscriber error
-        //onErrorReturn rxJava02.publisher_onError();
-        rxJava02.publisher_onErrorReturn();
+    }
+    
+    public void fromArray_fromIterable(){
+        Flowable<Integer> integerFlowable = Flowable.fromArray(1,2,3,4);
+        Flowable<Long> longFlowable = Flowable.fromIterable(Arrays.asList(1l,2l,3l,4l,5l,6l));
+
     }
 
-    /**
-     *  flatMap 새로운 것을 리턴하게 하지만 순서 보장은 불가능
-     */
-    public void flatMap() {
-
-        if (false) {
-            Flowable<Integer> flowable1 = Flowable.range(1, 1000).flatMap(data -> {
-                if ((data % 3) == 0) {
-                    return Flowable.just(data);
-                } else {
-                    return Flowable.empty();
-                }
-            }).doOnNext(data -> System.out.println("================>" + data));
-            flowable1.subscribe(data -> System.out.println(data));
-            threadSleep(10, true);
-        }
-
-
-        if (true) {
-            Flowable<Integer> flowable2 = Flowable.range(1, 1000).flatMap(data -> {
-                if ((data % 3) == 0) {
-                    return Flowable.just(data).delay(1L, TimeUnit.SECONDS);
-                } else {
-                    return Flowable.empty();
-                }
-            }).doOnNext(data -> System.out.println("=====> " + data));
-            flowable2.subscribe(data -> System.out.println(data));
-
-            threadSleep(10, true);
-        }
+    public void fromCallable(){
+        Flowable.fromCallable(() -> "Done").subscribe(new CustomSubscriber());
     }
 
-    /**
-     *  concatMap 새로운 것을 리턴하게 하고 단일 쓰레드
-     *  순서 보장은 되지만 비용이 크다. 완전 느림 안쓰는 것이 정신건강
-     */
-    public void concatMap() {
-        if (true) {
-            Flowable<Integer> flowable2 = Flowable.range(1, 1000).concatMap(data -> {
-                if ((data % 3) == 0) {
-                    return Flowable.just(data).delay(1L, TimeUnit.SECONDS);
-                } else {
-                    return Flowable.empty();
-                }
-            }).doOnNext(data -> System.out.println("=====> " + data));
-            flowable2.subscribe(data -> System.out.println(data));
-
-            threadSleep(10, true);
-        }
+    public void range(){
+        //Flowable.range(100,5).subscribe(new CustomSubscriber());
+        Flowable.range(100, 5).doOnNext(data -> ThreadUtil.sleep(1,false)).subscribe(new CustomSubscriber());
+        ThreadUtil.sleep(10,false);
     }
 
-    /**
-     *  concatMapEager 새로운 것을 리턴하게 하고 순서 보장은 되고 멀티 쓰레드이지만
-     *  데이터 순서, 속도 중요하다.
-     *  메모리 OOM 날 가능성이 있음
-     */
-    public void concatMapEager() {
-        if (true) {
-            Flowable<Integer> flowable2 = Flowable.range(1, 1000).concatMapEager(data -> {
-                if ((data % 3) == 0) {
-                    return Flowable.just(data).delay(1L, TimeUnit.SECONDS);
-                } else {
-                    return Flowable.empty();
-                }
-            }).doOnNext(data -> System.out.println("=====> " + data));
-            flowable2.subscribe(data -> System.out.println(data));
-
-            threadSleep(10, true);
-        }
+    public void interval(){
+        Flowable.interval(1, TimeUnit.SECONDS).subscribe(new CustomSubscriber(true));
+        ThreadUtil.sleep(10,true);
     }
 
-
-    /**
-     * 두 개의 stream 을 모음
-     */
-    public void merge(){
-        Flowable<Integer> source1 = Flowable.range(1,100).subscribeOn(Schedulers.computation()).observeOn(Schedulers.computation());
-        Flowable<Integer> source2 = Flowable.range(101,100).subscribeOn(Schedulers.computation()).observeOn(Schedulers.computation());
-        Flowable.merge(source1, source2).subscribe(s -> System.out.println(s));
-        threadSleep(10, true);
+    public void timer(){
+        Flowable.timer(10L, TimeUnit.SECONDS).subscribe(new CustomSubscriber(true));
+        ThreadUtil.sleep(20, true);
     }
 
-    /**
-     * 생산자 에러 재처리 도전
-     */
-    public void publisher_retry(){
-        Flowable<String> flowable = Flowable.just("1","2", "삼","4","오","6").map(data -> String.valueOf(Integer.parseInt(data))).retry(3);
-        flowable.subscribeOn(Schedulers.computation()).subscribe(data -> System.out.println(data));
-        threadSleep(10, false);
-    }
+    public void defer(){
 
-    /**
-     * 생산자 에러 리턴 처음 에러나오면 끝
-     */
-    public void publisher_onErrorReturn() {
-        Flowable<String> flowable = Flowable.just("1","2", "삼","4","오","6").map(data -> String.valueOf(Integer.parseInt(data))).onErrorReturn(data -> {
-            return "-1";
-        });
-        flowable.subscribeOn(Schedulers.computation()).subscribe(data -> System.out.println(data));
-        threadSleep(10, false);
-    }
+        List<String> list = new ArrayList();
+        list.add("a");
+        list.add("b");
+        list.add("c");
 
+        Flowable<Integer> flowable = Flowable.defer(() -> Flowable.just(list.size(), list.size() + 1));
+        flowable.subscribe(data -> System.out.println("1: "+ data));
+        
+        list.remove(0);
+        ThreadUtil.sleep(1, false);
+        flowable.subscribe(data -> System.out.println("2: "+ data));
+        
+        list.remove(0);
+        ThreadUtil.sleep(1, false);
+        flowable.subscribe(data -> System.out.println("3: "+ data));
 
-
-
-
-
-    public void threadSleep(int time, boolean isDebug){
-        try {
-            if(isDebug){
-                System.out.println("                                 " + time +"초 sleep " + Thread.currentThread().getName());
-            }
-            Thread.sleep(time * 1000L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        ThreadUtil.sleep(3, false);
     }
 }

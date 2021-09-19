@@ -48,15 +48,14 @@ public class RxJava01 {
         // single, maybe, mono, flux publisher 타입
         //rxJava01.singleMaybe_005();
 
-        // List 생산자 전략
-        //rxJava01.fromIterable_006();
-
-
         // just, Interval thread 보기
         //rxJava01.thread_007();
 
-        // 07 onBackpressureBuffer publisher 배압 전략
+        // onBackpressureBuffer publisher 배압 전략
         //rxJava01.backPressure_008();
+
+        // List 생산자 전략
+        //rxJava01.fromIterable_006();
     }
 
     /**
