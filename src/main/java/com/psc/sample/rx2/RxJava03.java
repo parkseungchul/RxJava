@@ -3,13 +3,8 @@ package com.psc.sample.rx2;
 import com.psc.sample.util.CustomSubscriber;
 import com.psc.sample.util.ThreadUtil;
 import io.reactivex.Flowable;
-import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -26,8 +21,17 @@ public class RxJava03 {
         //distinct, distinctUtilChanged 강아지들의 염원 증복 제거
         //rxJava03.distinct();
 
-        // take takeUtil takeWhile takeLast 나한테 몇 개나 줄 수 있어요?
-        rxJava03.take();
+        // take takeUtil takeWhile takeLast 나한테 몇 개나 어떻게 줄 수 있어요?
+        // rxJava03.take();
+
+        // skip skipUtil skipWhile skipLast 너는 좀 건너뛰자?
+        //rxJava03.skip();
+
+        // 쓰라틀,털 - 조절하다
+        // throttleFirst throttleLast throttleWithTimeout 특정 조건으로 조절하다.
+        rxJava03.throttle();
+
+
     }
 
     // 말이 필요 없지
@@ -79,16 +83,22 @@ public class RxJava03 {
         }
     }
 
-    // take
+    // take 몇개
     public void take(){
 
         if(false){
             Flowable.range(1, 100).take(10).subscribe(new CustomSubscriber());
         }
 
-        // 33이 될때까지
+        // takeUntil 50 될때까지
         if(false){
-            Flowable.range(1, 100).takeUntil(data -> data == 33).subscribe(new CustomSubscriber());
+            Flowable.range(1,100).takeUntil(data -> data == 50).subscribe(new CustomSubscriber());
+        }
+
+        // takeUntil 10초 동안
+        if(true){
+            Flowable.range(1,20).doOnNext(data -> ThreadUtil.sleep(1, false)).takeUntil(Flowable.timer(10, TimeUnit.SECONDS))
+                    .subscribe(new CustomSubscriber());
         }
 
         // 처음부터 특정조건까지
@@ -97,13 +107,85 @@ public class RxJava03 {
         }
 
         // 마지막 몇개
-        if(true){
+        if(false){
             Flowable.range(1, 100).takeLast(10).subscribe(new CustomSubscriber());
+            ThreadUtil.sleep(3,false);
+        }
+    }
+
+    // take 몇개
+    public void skip(){
+
+        if(false){
+            Flowable.range(1, 100).skip(10).subscribe(new CustomSubscriber());
         }
 
-        ThreadUtil.sleep(3,false);
 
+        // skipUtil 10초 동안
+        if(false){
+            Flowable.range(1,20).doOnNext(data -> ThreadUtil.sleep(1, false)).skipUntil(Flowable.timer(10, TimeUnit.SECONDS))
+                    .subscribe(new CustomSubscriber());
+        }
 
+        // 처음부터 특정조건까지 skip
+        if(false){
+            Flowable.range(1, 20).skipWhile(data -> data < 10).subscribe(new CustomSubscriber());
+        }
+
+        // 마지막 몇개
+        if(true){
+            Flowable.range(1, 20).skipLast(10).subscribe(new CustomSubscriber());
+            ThreadUtil.sleep(3,false);
+        }
+    }
+
+    // 쓰라틀
+    public void throttle(){
+
+        // 데이터 통지 이후 지정 시간 동안 스킵
+        if(false){
+            Flowable.interval(1, TimeUnit.SECONDS).throttleFirst(3, TimeUnit.SECONDS)
+                    .subscribe(new CustomSubscriber());
+            ThreadUtil.sleep(30,false);
+        }
+
+        // 지정한 시간마다 스킵하고 마지막에 통지된 데이터만 통지
+        if(false){
+            Flowable.interval(1, TimeUnit.SECONDS).throttleLast(3, TimeUnit.SECONDS)
+                    .subscribe(new CustomSubscriber());
+            ThreadUtil.sleep(30,false);
+        }
+
+        // 시간 초과하는 것을 리턴하는데 위배 전 값을 리턴함
+        if(false){
+            AtomicInteger i = new AtomicInteger(1);
+            Flowable.interval(1, TimeUnit.SECONDS).map(data -> {
+                if(data %5 == 0){
+                    ThreadUtil.sleep(2,false);
+                    return data;
+                }else {
+                    return data;
+                }
+            }).throttleWithTimeout(2, TimeUnit.SECONDS).subscribe(new CustomSubscriber());
+
+            ThreadUtil.sleep(20,false);
+        }
+
+        // 시간 초과하는 것을 리턴하는데 위배 전 값을 리턴함
+        if(true){
+            AtomicInteger i = new AtomicInteger(1);
+            Flowable.interval(1, TimeUnit.SECONDS).map(data -> {
+                if(data %5 == 0){
+                    ThreadUtil.sleep(2,false);
+                    return data;
+                }else {
+                    return data;
+                }
+            }).debounce(2, TimeUnit.SECONDS).subscribe(new CustomSubscriber());
+
+            ThreadUtil.sleep(25,false);
+        }
 
     }
+
 }
