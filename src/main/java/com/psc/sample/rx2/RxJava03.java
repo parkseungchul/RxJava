@@ -21,7 +21,7 @@ public class RxJava03 {
         RxJava03 rxJava03 = new RxJava03();
 
         // filter 걸러주는 녀석 (할말하않)
-        // rxJava03.filter();
+        rxJava03.filter();
 
         // 디스팅트 뚜렸한 분명한
         //distinct, distinctUtilChanged 강아지들의 염원 증복 제거
@@ -68,7 +68,7 @@ public class RxJava03 {
     public void filter(){
 
         if(true){
-            Flowable.range(1,1000000).filter(data -> data%3 == 0).subscribe(new CustomSubscriber());
+            Flowable.range(1,100).filter(data -> data%3 == 0).subscribe(new CustomSubscriber());
         }
 
 
