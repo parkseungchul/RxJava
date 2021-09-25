@@ -1,13 +1,13 @@
 ## [RxJava2 강의](https://www.youtube.com/playlist?list=PLogzC_RPf25EOeUVOnOIMDCYRhNwYTo9D)
 
-### 001. RxJava2 기본 문법 Generic, Lambda, Function, Stream ==> https://youtu.be/Arr06MUsPLY 
+### [001. RxJava2 기본 문법 Generic, Lambda, Function, Stream](https://youtu.be/Arr06MUsPLY) 
 - 00:00 Why Java?
 - 01:38 Generic Type
 - 25:26 Lambda
 - 44:37 Functional Interface (Function, Consumer, Predicate, Supplier)
 - 1:05:04 Stream
 
-### 002. RxJava2 생산자와 소비자 ==> https://youtu.be/sdbccXXnulE
+### [002. RxJava2 생산자와 소비자](https://youtu.be/sdbccXXnulE)
 - 00:00 환경 구성
 - 02:24 flowable subscribe 생산자와 소비자
 - 11:24 ConnectableFlowable (hot publisher)
@@ -16,7 +16,7 @@
 - 38:28 single, maybe, mono, flux publisher 타입
 - 44:18 onBackpressureBuffer publisher 배압 전략
 
-### 003. RxJava2  데이터 변환 연산자 ==> https://youtu.be/lEsf90DyKYE
+### [003. RxJava2  데이터 변환 연산자](https://youtu.be/lEsf90DyKYE)
 - 00:00 지난 시간 내용
 - 01:03 fromArray fromIterable 배열, 리스트 publisher
 - 10:17 fromCallable 반환값을 끝으로 통지하는 publisher
@@ -35,7 +35,7 @@
 - 53:04 toMap Single Map 만들기 (OOM 위험)
 - 58:45 toMultiMap Single MultiMap 만들기 (OOM 위험)
 
-### 004. RxJava2  데이터 제한과 결합 연산자 ==> https://youtu.be/T4xL8lGVi1o
+### [004. RxJava2  데이터 제한과 결합 연산자](https://youtu.be/T4xL8lGVi1o)
 - 00:00 지난시간 학습 내용
 - 02:04 filter 걸러주는 녀석
 - 06:27 distinct, distinctUtilChanged 강아지들의 염원 증복 제거
