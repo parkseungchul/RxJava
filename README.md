@@ -1,13 +1,13 @@
-## RxJava2 ==> https://www.youtube.com/playlist?list=PLogzC_RPf25EOeUVOnOIMDCYRhNwYTo9D
+## [RxJava2 강의](https://www.youtube.com/playlist?list=PLogzC_RPf25EOeUVOnOIMDCYRhNwYTo9D)
 
-### 001. RxJava2   기본 문법 Generic, Lambda, Function, Stream ==> https://youtu.be/Arr06MUsPLY 
+### 001. RxJava2 기본 문법 Generic, Lambda, Function, Stream ==> https://youtu.be/Arr06MUsPLY 
 - 00:00 Why Java?
 - 01:38 Generic Type
 - 25:26 Lambda
 - 44:37 Functional Interface (Function, Consumer, Predicate, Supplier)
 - 1:05:04 Stream
 
-### 002. RxJava2  생산자와 소비자 ==> https://youtu.be/sdbccXXnulE
+### 002. RxJava2 생산자와 소비자 ==> https://youtu.be/sdbccXXnulE
 - 00:00 환경 구성
 - 02:24 flowable subscribe 생산자와 소비자
 - 11:24 ConnectableFlowable (hot publisher)
