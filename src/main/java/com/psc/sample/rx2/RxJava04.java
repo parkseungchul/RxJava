@@ -14,6 +14,7 @@ import io.reactivex.functions.BiPredicate;
 import io.reactivex.schedulers.Schedulers;
 
 import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -50,8 +51,11 @@ public class RxJava04 {
         // repeat repeatWith (언제까지 맞선을) 반복적으로 할래?
         // rxJava04.repeat();
 
-        // delay (맞선을) 미뤄볼까?
-        rxJava04.delay();
+        // delay delaySubscription (맞선을) 미뤄볼까?
+        // rxJava04.delay();
+
+        // timeout 시간내로 (약속 장소로) 오지 않음 아웃
+        rxJava04.timeout();
     }
 
     public void isEmpty(){
@@ -200,8 +204,32 @@ public class RxJava04 {
 
     }
 
+    // 늦게 한다
     public void delay(){
-        Flowable.range(1,10).delay(5,TimeUnit.SECONDS).subscribe(new CustomSubscriber());
-        ThreadUtil.sleep(10,false);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat ( "yyyy-MM-dd HH:mm:ss");
+        System.out.println(dateFormat.format(System.currentTimeMillis()));
+        System.out.println("=========================");
+
+        // 바로 시작할래
+        if(false){
+            Flowable.range(1,10).map(data -> dateFormat.format(System.currentTimeMillis())).delay(9,TimeUnit.SECONDS).subscribe(new CustomSubscriber());
+            ThreadUtil.sleep(10,false);
+        }
+
+        // 천천히 시작할래
+        if(true){
+            Flowable.range(1,10).map(data -> dateFormat.format(System.currentTimeMillis())).delaySubscription(9,TimeUnit.SECONDS).subscribe(new CustomSubscriber());
+            ThreadUtil.sleep(10,false);
+        }
+
     }
+
+    // 지정한 시간내에 안되면 타임아웃
+    public void timeout(){
+
+        Flowable.range(1, 10).doOnNext(data -> ThreadUtil.sleep(data, false)).timeout(4, TimeUnit.SECONDS)
+                .subscribe(new CustomSubscriber());
+    }
+
 }
