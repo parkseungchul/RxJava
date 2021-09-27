@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>index</title>
+</head>
+<body>
+
+<h2> ----- DEPT ----- </h2>
+<table th:border="1">
+    <thead>
+    <tr>
+        <td>DEPTNO</td>
+        <td>DNAME</td>
+        <td>LOC</td>
+        <td>
+            <table>
+                <tr>
+                    </td>empno</td>
+                    </td>ename</td>
+                    </td>hiredate</td>
+                    </td>job</td>
+                    </td>sal</td>
+                    </td>mgr</td>
+                    </td>comm</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="dept :${depts}">
+        <td th:text ="${dept.deptno}"></td>
+        <td th:text ="${dept.dname}"></td>
+        <td th:text ="${dept.loc}"></td>
+        <td>
+            <table th:border="1">
+                <tr th:each="emp :${dept.empList}">
+                    <td th:text ="${emp.empno}"></td>
+                    <td th:text ="${emp.ename}"></td>
+                    <td th:text ="${emp.hiredate}"></td>
+                    <td th:text ="${emp.job}"></td>
+                    <td th:text ="${emp.sal}"></td>
+                    <td th:text ="${emp.mgr}"></td>
+                    <td th:text ="${emp.comm}"></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
