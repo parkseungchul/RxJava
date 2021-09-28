@@ -177,11 +177,12 @@ public class RxJava04 {
     // repeat repeatWhen
     public void repeat(){
 
-        // 반복
+        // 반복 그냥
         if(false){
             Flowable.range(1,10).scan(0, (data1, data2)-> data1 + data2).repeat(2).subscribe(new CustomSubscriber());
         }
 
+        // 한번은 그냥 하고 !!!
         // 외부에 의한 지정된 조건까지
         if(false){
             AtomicInteger atomicInteger = new AtomicInteger();
@@ -192,6 +193,13 @@ public class RxJava04 {
                 System.out.println(" >>>>> "+ atomicInteger.get());
                 return atomicInteger.get() > 50;
             }).subscribe(new CustomSubscriber());
+        }
+
+
+        if(true){
+            AtomicInteger atomicInteger = new AtomicInteger();
+            Flowable.range(1,10).doOnNext(data ->  atomicInteger.getAndIncrement())
+                    .repeatUntil(() -> atomicInteger.get() > 9).subscribe(new CustomSubscriber());
         }
 
         // 반복마다의 조건을 넣을 수 있음
