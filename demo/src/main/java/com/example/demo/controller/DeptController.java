@@ -33,7 +33,7 @@ public class DeptController {
                 .modelAttribute("depts",
                         this.deptRepository.findAll().flatMap(dept -> {
                             if(dept.getEmpList() != null){
-                                dept.setEmpList(dept.getEmpList().stream().filter(emp -> emp.getSal() > (sal!=null?sal:0)).collect(Collectors.toList()));
+                                dept.setEmpList(dept.getEmpList().stream().filter(emp -> emp.getSal() >= (sal!=null?sal:0)).collect(Collectors.toList()));
                                 return Flux.just(dept);
                             }else{
                                 return Flux.empty();
